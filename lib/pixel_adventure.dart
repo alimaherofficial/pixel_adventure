@@ -5,8 +5,8 @@ import 'package:flame/events.dart';
 import 'package:flame/game.dart';
 import 'package:flame/input.dart';
 import 'package:flutter/painting.dart';
-import 'package:pixel_adventure/actors/player.dart';
-import 'package:pixel_adventure/levels/level.dart';
+import 'package:pixel_adventure/component/level.dart';
+import 'package:pixel_adventure/component/player.dart';
 
 class PixelAdventure extends FlameGame
     with HasKeyboardHandlerComponents, DragCallbacks {
@@ -19,6 +19,8 @@ class PixelAdventure extends FlameGame
   late JoystickComponent joystickComponent;
 
   late final CameraComponent cameraComponent;
+
+  bool showJoystick = false;
   @override
   FutureOr<void> onLoad() async {
     await images.loadAllImages();
@@ -33,13 +35,17 @@ class PixelAdventure extends FlameGame
       cameraComponent,
       level,
     ]);
-    _addJoystick();
+    if (showJoystick) {
+      _addJoystick();
+    }
     return super.onLoad();
   }
 
   @override
   void update(double dt) {
-    _updateJoystick();
+    if (showJoystick) {
+      _updateJoystick();
+    }
     super.update(dt);
   }
 
@@ -48,7 +54,6 @@ class PixelAdventure extends FlameGame
       knob: SpriteComponent(
         sprite: Sprite(images.fromCache('HUD/Knob.png')),
       ),
-      knobRadius: 64,
       background: SpriteComponent(
         sprite: Sprite(images.fromCache('HUD/joystick.png')),
       ),
@@ -58,14 +63,20 @@ class PixelAdventure extends FlameGame
   }
 
   void _updateJoystick() {
-    // TODO implement
     switch (joystickComponent.direction) {
       case JoystickDirection.left:
+      case JoystickDirection.upLeft:
+      case JoystickDirection.downLeft:
+        player.direction = PlayerDirection.left;
         break;
       case JoystickDirection.right:
+      case JoystickDirection.upRight:
+      case JoystickDirection.downRight:
+        player.direction = PlayerDirection.right;
         break;
 
       default:
+        player.direction = PlayerDirection.none;
     }
   }
 }
