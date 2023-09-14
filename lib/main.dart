@@ -17,3 +17,5 @@ void main() async {
     ),
   );
 }
+// flutter command to build exe 
+// flutter build windows --release --no-sound-null-safety
