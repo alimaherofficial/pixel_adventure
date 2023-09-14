@@ -143,7 +143,7 @@ class Player extends SpriteAnimationGroupComponent
 
   void _updatePlayerMovement(double dt) {
     if (isJumping && isOnGround) {
-      _playerJump(dt);
+      playerJump(dt);
     }
     velocity.x = horizontalMovement * moveSpeed;
     position.x += velocity.x * dt;
@@ -206,7 +206,7 @@ class Player extends SpriteAnimationGroupComponent
     }
   }
 
-  void _playerJump(double dt) {
+  void playerJump(double dt) {
     velocity.y = -_jumpForce;
     position.y += velocity.y * dt;
     isOnGround = false;

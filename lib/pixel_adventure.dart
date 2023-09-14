@@ -19,8 +19,10 @@ class PixelAdventure extends FlameGame
   late JoystickComponent joystickComponent;
 
   late final CameraComponent cameraComponent;
+  late HudButtonComponent jumpButton;
+  bool isPaused = false;
 
-  bool showJoystick = false;
+  bool showJoystick = true;
   @override
   FutureOr<void> onLoad() async {
     await images.loadAllImages();
@@ -37,6 +39,7 @@ class PixelAdventure extends FlameGame
     ]);
     if (showJoystick) {
       _addJoystick();
+      _addJumpButton();
     }
     return super.onLoad();
   }
@@ -45,6 +48,7 @@ class PixelAdventure extends FlameGame
   void update(double dt) {
     if (showJoystick) {
       _updateJoystick();
+      _updateJumpButton(dt);
     }
     super.update(dt);
   }
@@ -77,6 +81,27 @@ class PixelAdventure extends FlameGame
 
       default:
         player.horizontalMovement = 0;
+    }
+  }
+
+  void _addJumpButton() {
+    jumpButton = HudButtonComponent(
+      button: SpriteComponent(
+        sprite: Sprite(images.fromCache('HUD/joystick.png')),
+      ),
+      margin: const EdgeInsets.only(right: 32, bottom: 32),
+      position: Vector2(1, 1),
+      onPressed: () {
+        isPaused = true;
+      },
+    );
+    add(jumpButton);
+  }
+
+  void _updateJumpButton(double dt) {
+    if (isPaused && player.isOnGround) {
+      player.playerJump(dt);
+      isPaused = false;
     }
   }
 }
